@@ -1,0 +1,16 @@
+//
+//  LQSecondCell.h
+//  LeQu
+//
+//  Created by apple on 16/6/18.
+//  Copyright © 2016年 Apple. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+@interface LQSecondCell : UICollectionViewCell
+
+@property (nonatomic,copy)NSString *title;
+@property (nonatomic,copy)NSString *subTitle;
+@property (nonatomic,copy)NSString *imageName;
+@end
