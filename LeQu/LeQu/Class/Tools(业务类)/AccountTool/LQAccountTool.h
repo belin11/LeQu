@@ -14,4 +14,14 @@
 + (void)saveAccount:(LQAccount *)account;
 // 取账号
 + (LQAccount *)account;
+/**
+ *  获取accessToken和保存账号
+ *
+ *  @param code    返回的code
+ *  @param success 成功的回调
+ *  @param failure 失败的回调
+ */
++ (void)accountWithCode:(NSString *)code
+                    success:(void(^)())success
+                    failure:(void(^)(NSError *error))failure;
 @end

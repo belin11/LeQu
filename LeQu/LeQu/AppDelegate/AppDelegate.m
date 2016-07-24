@@ -12,6 +12,8 @@
 #import "LQAccountTool.h"
 #import "LQRootViewControllerTool.h"
 
+#import <SDWebImageManager.h>
+
 @interface AppDelegate ()
 
 @end
@@ -21,8 +23,10 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge categories:nil];
+    // 注册通知
+    [application registerUserNotificationSettings:settings];
     self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
-//    [self chooseRootViewController];
  
     // 判断有没有授权
     if ([LQAccountTool account]) { // 已经授权
@@ -38,7 +42,13 @@
     
     return YES;
 }
-
+// 接收到内存警告会调用这个方法
+- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application{
+    // 停止所有的下载
+    [[SDWebImageManager sharedManager] cancelAll];
+    // 删除缓存
+    [[SDWebImageManager sharedManager].imageCache clearMemory];
+}
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.

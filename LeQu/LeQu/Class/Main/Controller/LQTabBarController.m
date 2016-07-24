@@ -16,11 +16,17 @@
 
 #import "UIImage+Image.h"
 #import "LQTabBar.h"
+#import "LQUserTool.h"
 
 
 
 @interface LQTabBarController ()
-
+{
+    LQHomeViewController *_homeVC;
+    LQActivityController *_activityVC;
+    LQOrganizationController *_organizationVC;
+    LQProfileController *_profileVC;
+}
 @end
 
 @implementation LQTabBarController
@@ -42,6 +48,23 @@
     
     [self setUpTabBar];
     [self setUpAllChildViewController];
+    
+//    [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(<#selector#>) userInfo:<#(nullable id)#> repeats:<#(BOOL)#>]
+    // 请求微博的未读数
+    [LQUserTool unReadWithSuccess:^(LQUserResult *result) {
+        // 设置微博消息未读数
+        _organizationVC.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld",result.status];
+        // 设置消息的未读数
+        _homeVC.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld",result.messageCount];
+        // 设置我的未读数
+        _profileVC.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld",result.follower];
+        // 设置应用程序的未读数
+        [UIApplication sharedApplication].applicationIconBadgeNumber = result.totalCount;
+        
+    } failure:^(NSError *error) {
+        
+        NSLog(@"%@",error);
+    }];
 }
 #pragma mark - 自定义tabbar
 - (void)setUpTabBar {
@@ -55,16 +78,15 @@
 #pragma mark - 添加所有的子控制器
 - (void)setUpAllChildViewController {
     
-    LQHomeViewController *homeVC = [[LQHomeViewController alloc]init];
+    _homeVC = [[LQHomeViewController alloc]init];
 
-    [self setUpOneChildViewControllerWith:homeVC andImage:[UIImage imageNamed:@"0_normal"] andSelectedImage:[UIImage originImagewithImageName:@"0_selected"] andTitle:@"首页"];
+    [self setUpOneChildViewControllerWith:_homeVC andImage:[UIImage imageNamed:@"0_normal"] andSelectedImage:[UIImage originImagewithImageName:@"0_selected"] andTitle:@"首页"];
 
-    LQActivityController *activityVC = [[LQActivityController alloc]init];
-    [self setUpOneChildViewControllerWith:activityVC andImage:[UIImage imageNamed:@"1_normal"] andSelectedImage:[UIImage originImagewithImageName:@"1_selected"] andTitle:@"查活动"];
+    _activityVC = [[LQActivityController alloc]init];
+    [self setUpOneChildViewControllerWith:_activityVC andImage:[UIImage imageNamed:@"1_normal"] andSelectedImage:[UIImage originImagewithImageName:@"1_selected"] andTitle:@"查活动"];
 
-     LQOrganizationController*organizationVC = [[LQOrganizationController alloc]init];
-    
-    [self setUpOneChildViewControllerWith:organizationVC andImage:[UIImage imageNamed:@"3_normal"] andSelectedImage:[UIImage originImagewithImageName:@"3_selected"] andTitle:@"找组织"];
+    _organizationVC = [[LQOrganizationController alloc]init];
+    [self setUpOneChildViewControllerWith:_organizationVC andImage:[UIImage imageNamed:@"3_normal"] andSelectedImage:[UIImage originImagewithImageName:@"3_selected"] andTitle:@"找组织"];
 
     
     LQProfileController *profileVC = [[LQProfileController alloc]init];

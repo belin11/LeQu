@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LQOrganizationController : UITableViewController
+@interface LQOrganizationController : UIViewController
 
 @end
