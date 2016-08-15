@@ -120,6 +120,7 @@
     // 中间
     
         self.navigationItem.title = [LQAccountTool account].name?:@"首页";
+//    self.tabBarItem
 }
 
 #pragma mark - 点击tabar的第3个item刷新微博
