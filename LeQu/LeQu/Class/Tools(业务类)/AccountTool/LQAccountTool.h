@@ -4,7 +4,7 @@
 //
 //  Created by apple on 16/7/10.
 //  Copyright © 2016年 Apple. All rights reserved.
-//
+//  账号存储和读取的业务
 
 #import <Foundation/Foundation.h>
 

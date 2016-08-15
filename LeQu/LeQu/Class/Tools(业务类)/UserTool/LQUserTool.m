@@ -14,6 +14,8 @@
 #import "LQAccount.h"
 #import "MJExtension.h"
 #import "LQAPIConstant.h"
+#import "LQUserResult.h"
+#import "LQUser.h"
 
 @implementation LQUserTool
 
@@ -39,5 +41,29 @@
         }
     }];
     
+}
+
++ (void)userInfoWithSuccess:(void (^)(LQUser *))success failure:(void (^)(NSError *))failure {
+    
+    // 创建参数模型
+    LQUserParam *param = [LQUserParam param];
+    param.uid = [LQAccountTool account].uid;
+    
+    // 模型转字典
+    NSDictionary *params = (NSDictionary *)param.mj_keyValues;
+
+    [LQHttpTool GET:userInfo_URLString parameters:params success:^(id responseObject) {
+        // 用户字典转用户模型
+        LQUser *user = [LQUser mj_objectWithKeyValues:responseObject];
+        if (success) {
+            success(user);
+        }
+        
+    } failuer:^(NSError *error) {
+        if (failure) {
+            failure(error);
+        }
+        
+    }];
 }
 @end

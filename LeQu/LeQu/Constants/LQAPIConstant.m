@@ -11,3 +11,5 @@
 NSString * const friends_timeline_URLString = @"https://api.weibo.com/2/statuses/friends_timeline.json";
 
 NSString * const unread_count_URLString = @"https://rm.api.weibo.com/2/remind/unread_count.json";
+
+NSString * const userInfo_URLString = @"https://api.weibo.com/2/users/show.json";

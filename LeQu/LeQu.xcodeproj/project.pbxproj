@@ -1008,6 +1008,11 @@
 					184EE68C1D0AEDC600163278 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = JFV9W3MHCN;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					184EE6A51D0AEDC600163278 = {
 						CreatedOnToolsVersion = 7.2;
@@ -1317,7 +1322,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = LeQu/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -1339,7 +1344,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = LeQu/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"-ObjC",

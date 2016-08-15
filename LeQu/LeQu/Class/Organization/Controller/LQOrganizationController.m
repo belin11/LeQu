@@ -12,9 +12,10 @@
 #import "LQToolKit.h"
 #import "UIBarButtonItem+Item.h"
 // 业务层
-//#import "LQAccountTool.h"
+#import "LQAccountTool.h"
 //#import "LQHttpTool.h"
 #import "LQStatusTool.h"
+#import "LQUserTool.h"
 // 数据模型层
 #import "LQAccount.h"
 #import "LQStatus.h"
@@ -35,7 +36,11 @@
 @end
 
 @implementation LQOrganizationController
-
+/**
+ *  微博数组
+ *
+ *  @return 微博的数组
+ */
 - (NSMutableArray *)statuses {
     
     if (_statuses == nil) {
@@ -59,7 +64,7 @@
         //请求最新的微博数据
         [self loadNewStatus];
     }];
-    // 立即刷新
+    // 自动下拉刷新
     [_tableView.mj_header beginRefreshing];
     
     // 添加上拉加载控件
@@ -67,6 +72,24 @@
         // 请求更多的微博
         [self loadMoreStatus];
     }];
+    
+    // 请求当前用户的昵称
+    [LQUserTool userInfoWithSuccess:^(LQUser *user) {
+        // 设置导航栏标题
+        self.navigationItem.title = user.name;
+        // 获取当前的账号
+        LQAccount *account = [LQAccountTool account];
+        account.name = user.name;
+        
+        // 保存账号
+        [LQAccountTool saveAccount:account];
+        
+    } failure:^(NSError *error) {
+        
+        NSLog(@"error:%@",error);
+    }];
+    
+    
 }
 #pragma mark - 创建tableView
 - (void)createTableView {
@@ -79,7 +102,7 @@
 }
 #pragma mark - 设置导航栏
 - (void)setUpNavigationBar {
-    
+#if 0
     // 左边
     LQLocationButton *positionBtn = [LQLocationButton buttonWithType:UIButtonTypeCustom];
     [positionBtn addTarget:self action:@selector(didClickedPosition:) forControlEvents:UIControlEventTouchUpInside];
@@ -93,7 +116,17 @@
     
     // 右边
     self.navigationItem.rightBarButtonItem = [UIBarButtonItem barButtonItemWithTitle:@"附近" image:[UIImage imageNamed:@"Location_white~iphone"] Target:self action:@selector(didClickedPosition:) forControlEvents:UIControlEventTouchUpInside];
+#endif
+    // 中间
     
+        self.navigationItem.title = [LQAccountTool account].name?:@"首页";
+}
+
+#pragma mark - 点击tabar的第3个item刷新微博
+- (void)refresh {
+    
+    // 自动下拉刷新
+    [_tableView.mj_header beginRefreshing];
 }
 #pragma mark - 请求最新的微博
 - (void)loadNewStatus{
@@ -142,12 +175,9 @@
     }];
 
 }
-- (void)didClickedPosition:(UIButton *)sender {
-    NSLog(@"...");
-}
+
 
 #pragma mark - Table view data source
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     return self.statuses.count;
@@ -168,7 +198,6 @@
     cell.detailTextLabel.text = status.text;
     return cell;
 }
-
 
 
 @end

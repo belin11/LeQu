@@ -10,4 +10,5 @@
 
 @interface LQOrganizationController : UIViewController
 
+- (void)refresh;
 @end

@@ -13,6 +13,9 @@
 FOUNDATION_EXTERN NSString * const friends_timeline_URLString;
 // 获取某个用户的各种消息未读数的接口
 FOUNDATION_EXTERN NSString * const unread_count_URLString;
+// 获取用户信息的接口
+FOUNDATION_EXTERN NSString * const userInfo_URLString;
+
 
 
 @end

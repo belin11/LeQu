@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import <AVFoundation/AVFoundation.h>
 //#import "LQMediaPlayerViewController.h"
 #import "LQOAuthController.h"
 #import "LQAccountTool.h"
@@ -15,7 +16,9 @@
 #import <SDWebImageManager.h>
 
 @interface AppDelegate ()
-
+{
+    AVAudioPlayer *_player;
+}
 @end
 
 @implementation AppDelegate
@@ -24,8 +27,18 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge categories:nil];
-    // 注册通知
+    // 注册通知，就能发送通知
     [application registerUserNotificationSettings:settings];
+    
+    // 要在真机上后台播放，要设置音频会话
+    AVAudioSession *session = [AVAudioSession sharedInstance];
+    
+    // 设置会话类型（后台播放）
+    [session setCategory:AVAudioSessionCategoryPlayback error:nil];
+    
+    // 激活会话
+    [session setActive:YES error:nil];
+    
     self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
  
     // 判断有没有授权
@@ -49,14 +62,34 @@
     // 删除缓存
     [[SDWebImageManager sharedManager].imageCache clearMemory];
 }
+
+// 失去焦点
 - (void)applicationWillResignActive:(UIApplication *)application {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    
+    NSURL *url = [[NSBundle mainBundle] URLForResource:@"ss" withExtension:@"mp3"];
+    AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
+    
+    [player prepareToPlay];
+    // 无限循环播放
+    player.numberOfLoops = -1;
+    [player play];
+    _player = player;
 }
 
+// 程序进入后台调用
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    // 开启一个后台任务，时间不确定，优先级比较低，假如系统要因内存不足关闭应用，首先会考虑
+    UIBackgroundTaskIdentifier ID = [application beginBackgroundTaskWithExpirationHandler:^{
+        // 当后台任务结束的时候调用
+        [application endBackgroundTask:ID];
+    }];
+    
+    // 如何提高后台任务的优先级，欺骗苹果，我们的做法是后台播放音乐
+    
+    //  但是苹果会检测你的程序有没有播放音乐，如果没有，会干掉你
+    
+    // 微博：在程序将要进入后台的时候，添加一个静音的音乐
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {

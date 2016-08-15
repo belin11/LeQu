@@ -17,15 +17,17 @@
 #import "UIImage+Image.h"
 #import "LQTabBar.h"
 #import "LQUserTool.h"
+#import "LQUserResult.h"
 
 
 
-@interface LQTabBarController ()
+@interface LQTabBarController () <UITabBarControllerDelegate>
 {
     LQHomeViewController *_homeVC;
     LQActivityController *_activityVC;
     LQOrganizationController *_organizationVC;
     LQProfileController *_profileVC;
+    NSInteger _selectIndex;
 }
 @end
 
@@ -48,8 +50,13 @@
     
     [self setUpTabBar];
     [self setUpAllChildViewController];
+    // 第隔一段时间请求未读数
+    [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(loadUnread) userInfo:nil repeats:YES];
+ 
+}
+#pragma mark - 请求未读数
+- (void)loadUnread {
     
-//    [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(<#selector#>) userInfo:<#(nullable id)#> repeats:<#(BOOL)#>]
     // 请求微博的未读数
     [LQUserTool unReadWithSuccess:^(LQUserResult *result) {
         // 设置微博消息未读数
@@ -66,6 +73,19 @@
         NSLog(@"%@",error);
     }];
 }
+
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
+    
+    
+    if (tabBarController.selectedIndex == 2 && _selectIndex == tabBarController.selectedIndex) {
+        // 点击item刷新微博
+        [_organizationVC refresh];
+    }
+    
+    _selectIndex = tabBarController.selectedIndex;
+    
+}
+
 #pragma mark - 自定义tabbar
 - (void)setUpTabBar {
     
@@ -79,7 +99,6 @@
 - (void)setUpAllChildViewController {
     
     _homeVC = [[LQHomeViewController alloc]init];
-
     [self setUpOneChildViewControllerWith:_homeVC andImage:[UIImage imageNamed:@"0_normal"] andSelectedImage:[UIImage originImagewithImageName:@"0_selected"] andTitle:@"首页"];
 
     _activityVC = [[LQActivityController alloc]init];
@@ -91,7 +110,7 @@
     
     LQProfileController *profileVC = [[LQProfileController alloc]init];
     [self setUpOneChildViewControllerWith:profileVC andImage:[UIImage imageNamed:@"4_normal"] andSelectedImage:[UIImage originImagewithImageName:@"4_selected"] andTitle:@"我的"];
-
+    _profileVC = profileVC;
 }
 
 #pragma mark - 添加一个子控制器

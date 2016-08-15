@@ -4,7 +4,7 @@
 //
 //  Created by apple on 16/7/10.
 //  Copyright © 2016年 Apple. All rights reserved.
-//
+//  授权成功后的数据模型
 
 #import <Foundation/Foundation.h>
 /*
@@ -20,6 +20,10 @@
 @property (nonatomic, copy)NSString *remind_in;// 账号的有效期
 @property (nonatomic, copy)NSString *uid;// 用户唯一标识符
 @property (nonatomic, copy)NSDate *expires_date; // 账号的过期时间
+/**
+ *  用户的昵称
+ */
+@property (nonatomic, strong) NSString *name;
 
 + (instancetype)accountWithDict:(NSDictionary *)dict;
 @end
